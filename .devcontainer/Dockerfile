@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -yq \
     curl \
     python3 \
     python3-pip \
+    net-tools \
     vim \
     unzip \
     usbutils \

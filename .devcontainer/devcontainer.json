@@ -5,10 +5,12 @@
   },
   "runArgs": [
      "--privileged",
+     "--network=host",
      "-e", "DISPLAY=${env:DISPLAY}",
      "-v", "/tmp/.X11-unix:/tmp/.X11-unix",
      "-v", "${env:HOME}/.Xauthority:/home/dev/.Xauthority:rw",
      "-e", "QT_X11_NO_MITSHM=1",
+     "-e", "ROS_DOMAIN_ID=1",
      "--gpus", "all",
      "--device=/dev/dri:/dev/dri:rwm",
      "--dns=8.8.8.8",
