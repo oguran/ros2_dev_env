@@ -58,6 +58,7 @@ RUN apt-get update && apt-get install -y sudo && usermod -aG sudo dev && echo "d
 
 # GPU アクセスのためのグループ追加
 RUN usermod -a -G video dev
+RUN usermod -a -G render dev
 
 USER dev
 WORKDIR /home/dev
@@ -67,14 +68,14 @@ RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
 
 # Mesa/EGL環境変数の設定
 ENV LIBGL_ALWAYS_INDIRECT=0
-ENV MESA_GL_VERSION_OVERRIDE=3.3
-ENV MESA_GLSL_VERSION_OVERRIDE=330
+# ENV MESA_GL_VERSION_OVERRIDE=3.3
+# ENV MESA_GLSL_VERSION_OVERRIDE=330
 ENV EGL_PLATFORM=x11
 ENV __GL_YIELD="USLEEP"
 ENV __GL_SYNC_TO_VBLANK=0
 
 # NVIDIA GPU acceleration settings
 ENV NVIDIA_VISIBLE_DEVICES=all
-ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility,graphics
+ENV NVIDIA_DRIVER_CAPABILITIES=all
 
 CMD ["/bin/bash"]

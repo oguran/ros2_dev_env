@@ -41,5 +41,5 @@
       ]
     }
   },
-  "postCreateCommand": "sudo chmod 666 /dev/dri/render* && echo Ready to develop ROS2!"
+  "postCreateCommand": "echo Ready to develop ROS2!"
 }
