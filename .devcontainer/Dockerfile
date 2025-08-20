@@ -46,6 +46,7 @@ RUN apt-get update
 # ROS2 Jazzy Desktop install
 RUN apt-get install -yq \
     ros-humble-desktop \
+    ros-humble-topic-tools \
     ros-dev-tools \
     && rm -rf /var/lib/apt/lists/*
 
