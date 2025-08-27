@@ -1,0 +1,45 @@
+<!-- fastdds.xml -->
+<?xml version="1.0" encoding="UTF-8" ?>
+<profiles xmlns="http://www.eprosima.com/XMLSchemas/fastRTPS_Profiles">
+
+  <transport_descriptors>
+    <!-- UDPv4 Transport -->
+    <transport_descriptor>
+      <transport_id>udp_transport</transport_id>
+      <type>UDPv4</type>
+      <interfaceWhiteList>
+        <address>172.16.0.0/12</address>
+        <!-- 必要なら追加例: <address>192.168.0.0/16</address> -->
+      </interfaceWhiteList>
+      <!-- NICやKernelに応じて調整 -->
+      <sendBufferSize>262144</sendBufferSize>
+      <receiveBufferSize>262144</receiveBufferSize>
+    </transport_descriptor>
+
+    <!-- Shared Memory Transport（SHM）-->
+    <transport_descriptor>
+      <transport_id>shm_transport</transport_id>
+      <type>SHM</type>
+      <!-- セグメントサイズは送る画像サイズ等に応じて拡大も可 -->
+      <segment_size>268435456</segment_size> <!-- 256MB -->
+      <port_queue_capacity>512</port_queue_capacity>
+      <healthy_check_timeout>100</healthy_check_timeout>
+    </transport_descriptor>
+  </transport_descriptors>
+
+  <participant profile_name="participant_profile" is_default_profile="true">
+    <rtps>
+      <!-- 内蔵トランスポートを無効化して、上で宣言した UDP/SHM を使用 -->
+      <useBuiltinTransports>false</useBuiltinTransports>
+      <userTransports>
+        <transport_id>udp_transport</transport_id>
+        <transport_id>shm_transport</transport_id>
+      </userTransports>
+      <!-- 高頻度向けの控えめな設定例 -->
+      <builtin>
+        <leaseDuration>10</leaseDuration>
+        <leaseAnnouncement>3</leaseAnnouncement>
+      </builtin>
+    </rtps>
+  </participant>
+</profiles>

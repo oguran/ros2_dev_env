@@ -1,45 +1,58 @@
 {
-  "name": "Ubuntu 22.04 ROS2(Humble) Development Environment",
+  "name": "Ubuntu 22.04 ROS2 (Humble) Dev",
   "build": {
     "dockerfile": "Dockerfile"
   },
+  // dev ユーザで入る
+  "containerUser": "dev",
+
   "runArgs": [
-     "--privileged",
-     "--network=host",
-     "-e", "DISPLAY=${env:DISPLAY}",
-     "-v", "/tmp/.X11-unix:/tmp/.X11-unix",
-     "-v", "${env:HOME}/.Xauthority:/home/dev/.Xauthority:rw",
-     "-e", "QT_X11_NO_MITSHM=1",
-     "-e", "ROS_DOMAIN_ID=1",
-     "--gpus", "all",
-     "--device=/dev/dri:/dev/dri:rwm",
-     "--dns=8.8.8.8",
-     "--dns=8.8.4.4"
+    "--privileged",
+    "--network=ros_net",            // 事前に作成: docker network create ros_net
+    "--gpus", "all",
+    "--device=/dev/dri:/dev/dri:rwm",
+    // 低遅延を強く求めるなら共有メモリ(任意)
+    "--ipc=host",
+
+    // X11
+    "-e", "DISPLAY=${env:DISPLAY}",
+    "-v", "/tmp/.X11-unix:/tmp/.X11-unix:rw",
+    "-v", "${env:HOME}/.Xauthority:/home/dev/.Xauthority:rw",
+    "-e", "QT_X11_NO_MITSHM=1",
+
+    // ROS 2 ドメインIDを明示
+    "-e", "ROS_DOMAIN_ID=1",
+
+    // DNS（必要に応じて変更）
+    "--dns=8.8.8.8",
+    "--dns=8.8.4.4"
   ],
+
   "mounts": [
-    "source=${localWorkspaceFolder}/,target=/home/dev/workspace,type=bind"
+    "source=${localWorkspaceFolder},target=/home/dev/workspace,type=bind"
   ],
+
   "customizations": {
     "vscode": {
       "settings": {
         "terminal.integrated.defaultProfile.linux": "bash",
-        "terminal.integrated.cwd": "/home/dev",
+        "terminal.integrated.cwd": "/home/dev/workspace",
         "terminal.integrated.profiles.linux": {
           "bash": {
             "path": "/bin/bash",
-            "args": [
-              "--login"
-            ]
+            "args": ["--login"]
           }
         }
       },
       "extensions": [
+        "ms-iot.vscode-ros",
         "ms-vscode.makefile-tools",
         "ms-vscode.cpptools-extension-pack",
-        "mcu-debug.debug-tracker-vscode",
-        "marus25.cortex-debug"
+        "eamodio.gitlens"
       ]
     }
   },
-  "postCreateCommand": "echo Ready to develop ROS2!"
+
+  // 初回に最低限の確認を行う（失敗しても先に進む）
+  "postCreateCommand": "bash -lc 'source /opt/ros/humble/setup.bash && echo Ready to develop ROS2!'"
 }
