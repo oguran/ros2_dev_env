@@ -1,0 +1,45 @@
+{
+  "name": "Ubuntu 22.04 ROS2(Humble) Development Environment",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "runArgs": [
+     "--privileged",
+     "--network=host",
+     "-e", "DISPLAY=${env:DISPLAY}",
+     "-v", "/tmp/.X11-unix:/tmp/.X11-unix",
+     "-v", "${env:HOME}/.Xauthority:/home/dev/.Xauthority:rw",
+     "-e", "QT_X11_NO_MITSHM=1",
+     "-e", "ROS_DOMAIN_ID=1",
+     "--gpus", "all",
+     "--device=/dev/dri:/dev/dri:rwm",
+     "--dns=8.8.8.8",
+     "--dns=8.8.4.4"
+  ],
+  "mounts": [
+    "source=${localWorkspaceFolder}/,target=/home/dev/workspace,type=bind"
+  ],
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "terminal.integrated.cwd": "/home/dev",
+        "terminal.integrated.profiles.linux": {
+          "bash": {
+            "path": "/bin/bash",
+            "args": [
+              "--login"
+            ]
+          }
+        }
+      },
+      "extensions": [
+        "ms-vscode.makefile-tools",
+        "ms-vscode.cpptools-extension-pack",
+        "mcu-debug.debug-tracker-vscode",
+        "marus25.cortex-debug"
+      ]
+    }
+  },
+  "postCreateCommand": "echo Ready to develop ROS2!"
+}
